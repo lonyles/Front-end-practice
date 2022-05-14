@@ -1,0 +1,136 @@
+<template>
+  <div class="wrapper">
+    <img
+      src="http://www.dell-lee.com/imgs/vue3/user.png"
+      class="wrapper__img"
+    />
+    <div class="wrapper__input">
+      <input
+        class="wrapper__input__content"
+        placeholder="用户名"
+        v-model="data.username"
+      />
+    </div>
+    <div class="wrapper__input">
+      <input
+        type="password"
+        class="wrapper__input__content"
+        placeholder="请输入密码"
+        v-model="data.password"
+      />
+    </div>
+    <div class="wrapper__button" @click="handleClick">登录</div>
+    <div class="wrapper__link" @click="handleRegister">注册</div>
+    <hint v-if="data.showhint" :message="data.hintMessage" />
+  </div>
+</template>
+
+<script>
+import { reactive } from "@vue/reactivity";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import hint from "../../components/Hint.vue";
+
+axios.defaults.headers.post["Content-Type"] = "application/json";
+export default {
+  name: "loginIng",
+  components: { hint },
+  setup() {
+    const data = reactive({
+      username: "",
+      password: "",
+      showhint: false,
+      hintMessage: "",
+    });
+
+    const router = useRouter();
+    const showHints = (message) => {
+      data.showhint = true;
+      data.hintMessage = message;
+      setTimeout(() => {
+        data.showhint = false;
+        data.hintMessage = "";
+      }, 2000);
+    };
+    const handleClick = async () => {
+      try {
+        const result = await axios.post(
+          "https://www.fastmock.site/mock/ae8e9031947a302fed5f92425995aa19/jd/api/user/login1",
+          {
+            username: data.username,
+            password: data.password,
+          }
+        );
+        if (result?.data?.errno === 0) {
+          localStorage.isLogin = true;
+          router.push({ name: "home" });
+        } else {
+          showHints("登录失败");
+          // alert("登录失败");
+        }
+      } catch (e) {
+        showHints("请求失败");
+        // alert("请求失败");
+      }
+      //   .then(() => {
+      //     localStorage.isLogin = true
+      //     router.push({ name: 'home' })
+      //   }).catch(() => {
+      //     alert('登录失败')
+      //   })
+    };
+    const handleRegister = () => {
+      router.push({ name: "Register" });
+    };
+    return { handleClick, handleRegister, data };
+  },
+};
+</script>
+
+<style lang='scss' scoped>
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  &__img {
+    display: block;
+    margin: 0 auto 0.5rem auto;
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+  &__input {
+    box-sizing: border-box;
+    height: 0.5rem;
+    padding: 0.16rem;
+    margin: 0 0.4rem 0.16rem 0.4rem;
+    background: #f9f9f9;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    border-radius: 6px;
+    &__content {
+      font-size: 16px;
+      border: none;
+      outline: none;
+      width: 100%;
+      background: none;
+    }
+  }
+  &__button {
+    margin: 0.32rem 0.4rem 0.16rem 0.4rem;
+    line-height: 0.48rem;
+    background: #0091ff;
+    box-shadow: 0 0.04rem 0.08rem 0 rgba(0, 145, 255, 0.32);
+    border-radius: 0.04rem;
+    border-radius: 0.04rem;
+    color: #fff;
+    text-align: center;
+  }
+  &__link {
+    font-size: 0.14rem;
+    text-align: center;
+    color: #777;
+  }
+}
+</style>
