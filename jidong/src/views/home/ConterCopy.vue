@@ -1,47 +1,28 @@
 <template>
-    <div class="nearby">
-      <h3 class="nearby__title">附近店铺</h3>
-      <div class="nearby__item"
-      v-for="item in nerabyList"
-      :key="item.id">
-        <img
-          class="nearby__item__img"
-          :src='item.imgUrl'
-        />
-        <div class="nearby__item__content">
-          <div class="nearby__item__content__title">{{item.title}}</div>
-          <div class="nearby__item__content__tags">
-            <span class="nearby__item__content__tags__tag"
-            v-for="(innerItem,innerIndex) in item.tag"
-            :key="innerIndex">{{innerItem}}</span>
-          </div>
-          <p class="nearby__item__content__protrude">{{item.protrude}}</p>
-        </div>
-      </div>
-    </div>
+  <div class="nearby">
+    <h3 class="nearby__title">附近店铺</h3>
+    <ShopInfo v-for="item in nerabyList.data" :key="item._id" :item="item"/>
+  </div>
 </template>
 
 <script>
-export default ({
-  name: 'ConterCopy',
-  setup () {
-    const nerabyList = [{
-      id: 1,
-      imgUrl: 'http://www.dell-lee.com/imgs/vue3/near.png',
-      title: '沃尔玛',
-      tag: ['月售一万', '起送5元', '基础运费5元'],
-      protrude: 'VIP尊享满89元减4元运费券(每月三张)'
-    },
-    {
-      id: 2,
-      imgUrl: 'http://www.dell-lee.com/imgs/vue3/near.png',
-      title: '沃尔玛',
-      tag: ['月售一万', '起送5元', '基础运费5元'],
-      protrude: 'VIP尊享满89元减4元运费券(每月三张)'
-    }]
-    return { nerabyList }
-  }
-})
+import axios from "axios";
+import { ref } from '@vue/reactivity';
+import ShopInfo from '../../components/ShopInfo.vue'
+export default {
+  name: "ConterCopy",
+  components:{ShopInfo},
+  setup() {
+    const nerabyList = ref([])
+    const getNerabyList = async () => {
+      const result = await axios.get('https://www.fastmock.site/mock/ae8e9031947a302fed5f92425995aa19/jd/api/shop/hot-list');
+      nerabyList.value = result.data;
+    };
+   
+    getNerabyList();
+    return { nerabyList };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -61,7 +42,7 @@ export default ({
       margin-right: 0.18rem;
     }
     &__content {
-      padding-bottom: .12rem;
+      padding-bottom: 0.12rem;
       border-bottom: 1px solid #f1f1f1;
       flex: 1;
       &__title {
@@ -80,9 +61,9 @@ export default ({
       }
       &__protrude {
         color: #e93b3b;
-        line-height: .18rem;
-        font-size: .14rem;
-        margin-top: .08rem 0 0 0;
+        line-height: 0.18rem;
+        font-size: 0.14rem;
+        margin-top: 0.08rem 0 0 0;
       }
     }
   }

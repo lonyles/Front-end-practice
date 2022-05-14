@@ -55,7 +55,7 @@ export default {
     const handleClick = async () => {
       try {
         const result = await axios.post(
-          "https://www.fastmock.site/mock/ae8e9031947a302fed5f92425995aa19/jd/api/user/login1",
+          "https://www.fastmock.site/mock/ae8e9031947a302fed5f92425995aa19/jd/api/user/login",
           {
             username: data.username,
             password: data.password,
