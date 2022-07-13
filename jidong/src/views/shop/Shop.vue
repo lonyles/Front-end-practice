@@ -7,19 +7,21 @@
             <input class="search__content__input" placeholder="请输入商品名称">
         </div>
     </div>
-    <ShopInfo :item='data.item.data'/>
+    <ShopInfo :item='item.data'/>
+    <CoreData/>
 </div>
   
 </template>
 
 <script>
 import { useRouter, useRoute } from "vue-router";
+import { reactive, toRefs } from '@vue/reactivity';
 import ShopInfo from "../../components/ShopInfo.vue";
 import axios from 'axios';
-import { reactive } from '@vue/reactivity';
+import CoreData from './CoreData'
 export default {
   name: "Shop",
-  components: { ShopInfo },
+  components: { ShopInfo, CoreData },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -32,7 +34,8 @@ export default {
         data.item = result.data;
     }
     getItemData()
-    return{data, backHome}
+    const { item } = toRefs(data)
+    return{item, backHome}
   },
 };
 </script>
